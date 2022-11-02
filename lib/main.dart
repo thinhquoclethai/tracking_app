@@ -1,8 +1,14 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:tracking_app/home_page.dart';
+import 'package:tracking_app/color_schema.dart';
 import 'package:tracking_app/login_page.dart';
 
-void main() => runApp(const App());
+void main() => runApp(
+      DevicePreview(
+        enabled: false,
+        builder: (context) => const App(), // Wrap your app
+      ),
+    );
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -11,13 +17,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Tracking app',
+      useInheritedMediaQuery: true,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
-      initialRoute: '/',
-      routes: {
-        '/': (_) => const LoginPage(),
-        '/home': (_) => const HomePage(),
-      },
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+      home: const LoginPage(),
     );
   }
 }

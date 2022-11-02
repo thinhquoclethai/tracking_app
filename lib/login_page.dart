@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tracking_app/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,11 +10,23 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   late TextEditingController _ipTextController;
+  bool isValid = false;
 
   @override
   void initState() {
     super.initState();
-    _ipTextController = TextEditingController();
+    _ipTextController = TextEditingController()
+      ..addListener(() {
+        if (_ipTextController.text.isEmpty) {
+          setState(() {
+            isValid = false;
+          });
+        } else {
+          setState(() {
+            isValid = true;
+          });
+        }
+      });
   }
 
   @override
@@ -55,21 +68,23 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _ipTextController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Ip',
-                  hintText: 'Nhập địa chỉ Ip của thiết bị ở đây',
+                  labelText: 'Địa chỉ IP',
+                  hintText: 'Nhập địa chỉ IP của thiết bị ở đây',
                 ),
-                keyboardType: TextInputType.number,
               ),
               const SizedBox(
                 height: 16,
               ),
               Center(
                 child: ElevatedButton(
-                  onPressed: _ipTextController.text.isEmpty
+                  onPressed: !isValid
                       ? null
-                      : () => Navigator.of(context).pushNamed(
-                            '/home',
-                            arguments: _ipTextController.text,
+                      : () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => HomePage(
+                                ip: _ipTextController.text,
+                              ),
+                            ),
                           ),
                   child: const Text('Truy cập'),
                 ),
